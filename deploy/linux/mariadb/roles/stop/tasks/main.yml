@@ -1,0 +1,13 @@
+---
+
+- name: check if MariaDB is running
+  shell: systemctl | grep mariadb | wc -l
+  register: mariadb_running
+
+- name: stop MariaDB
+  when: mariadb_running.stdout|int == 1
+  service:
+    name: mariadb
+    enabled: false
+    state: stopped
+  become: yes

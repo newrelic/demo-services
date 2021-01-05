@@ -1,0 +1,35 @@
+---
+
+# This play requires the following variable set
+#   service_port: "<The port the database will listen on>"
+
+- fail:
+    msg: "service_port is required"
+  when: service_port is not defined
+
+- name: Create MariaDB configuration file
+  template:
+    src: my.cnf.j2
+    dest: /etc/my.cnf
+  become: yes
+
+- name: Create MariaDB log file
+  file:
+    path: /var/log/mysql.log
+    state: touch
+    owner: mysql
+    group: mysql
+    mode: 0775
+  become: yes
+
+- name: Create MariaDB PID driectory
+  file:
+    path: /var/run/mysqld
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 0775
+  become: yes
+
+
+
