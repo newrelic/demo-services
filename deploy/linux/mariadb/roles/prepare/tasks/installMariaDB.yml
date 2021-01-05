@@ -1,0 +1,10 @@
+---
+
+- name: install MariaDB and python bindings
+  yum:
+    name: 
+      - MySQL-python
+      - mariadb-server
+    state: present
+  become: yes
+

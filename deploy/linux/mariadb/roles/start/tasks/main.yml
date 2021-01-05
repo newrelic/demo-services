@@ -1,0 +1,76 @@
+---
+
+# This play requires the following variable set
+#   database_user: "<The user name that will be used to connect to the database>"
+#   database_password: "<The password that will be used to connect to the database>"
+
+- fail:
+    msg: "database_user is required"
+  when: database_user is not defined
+
+- fail:
+    msg: "database_password is required"
+  when: database_password is not defined
+
+- name: Set root password file path
+  set_fact:
+    root_cred_file_path: /usr/local/etc/mysql_root
+
+- name: Generate temp password
+  set_fact:
+    temp_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+
+- name: Save root password to host (idempotent)
+  copy:
+    content: "{{ temp_password }}"
+    dest: "{{ root_cred_file_path }}"
+    owner: root
+    mode: 0700
+    force: false
+  become: yes
+  
+- name: Read in the root password
+  slurp:
+    src: "{{ root_cred_file_path }}"
+  register: encoded_root_password
+  become: yes
+
+- name: Decode the root password
+  set_fact:
+    root_password: "{{ encoded_root_password.content | b64decode }}"
+
+- name: Start mariadb
+  service:
+    name: mariadb
+    enabled: true
+    state: started
+  become: yes
+
+- name: Setup root user
+  mysql_user:
+    login_user: "root"
+    login_password: "{{ root_password }}"
+    user: "root"
+    password: "{{ root_password }}"
+    check_implicit_admin: true
+    host: localhost
+
+- name: Remove remote root
+  mysql_user:
+    login_user: "root"
+    login_password: "{{ root_password }}"
+    user: "root"
+    host: "{{ ansible_fqdn }}"
+    check_implicit_admin: true
+    state: absent
+
+- name: Create db user
+  mysql_user:
+    login_user: "root"
+    login_password: "{{ root_password }}"
+    name: "{{ database_user }}"
+    password: "{{ database_password }}"
+    host: "%"
+    priv: "*.*:ALL"
+    state: present
+
