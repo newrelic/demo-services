@@ -1,6 +1,6 @@
 [![New Relic Experimental header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Experimental.png)](https://opensource.newrelic.com/oss-category/#new-relic-experimental)
 
-# [Demo-services] 
+# Demo-services 
 
 This project provides Ansible plays to set up various services for use in the [Demo-deployer](https://github.com/newrelic/demo-deployer) ecosystem. These services are can be anything from a database, to a in memory data store, to a queue. This is currently experimental and breaking changes are expected.
 
@@ -28,4 +28,4 @@ If you believe you have found a security vulnerability in this project or any of
 If you would like to contribute to this project, review [these guidelines](./CONTRIBUTING.md).
 
 ## License
-[Demo-services] is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
+Demo-services is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
