@@ -22,7 +22,8 @@
 
 - name: Save root password to host (idempotent)
   copy:
-    content: "{{ temp_password }}"
+    # use root_user_password if defined in deployment config. otherwise, use generated password.
+    content: "{{ root_user_password | default(temp_password) }}"
     dest: "{{ root_cred_file_path }}"
     owner: root
     mode: 0700
