@@ -24,7 +24,7 @@
   become: yes
 
 - name: Setup root user
-  mysql_user:
+  community.mysql.mysql_user:
     login_user: "root"
     login_password: "{{ database_root_password }}"
     user: "root"
@@ -33,7 +33,7 @@
     host: localhost
 
 - name: Remove remote root
-  mysql_user:
+  community.mysql.mysql_user:
     login_user: "root"
     login_password: "{{ database_root_password }}"
     user: "root"
@@ -41,8 +41,24 @@
     check_implicit_admin: true
     state: absent
 
+- name: Remove anonymous user on localhost
+  community.mysql.mysql_user:
+    login_user: "root"
+    login_password: "{{ database_root_password }}"
+    name: ""
+    host: localhost
+    state: absent
+
+- name: Remove anonymous user on internal dns
+  community.mysql.mysql_user:
+    login_user: "root"
+    login_password: "{{ database_root_password }}"
+    name: ""
+    host: "{{ ansible_fqdn }}"
+    state: absent
+
 - name: Create db user
-  mysql_user:
+  community.mysql.mysql_user:
     login_user: "root"
     login_password: "{{ database_root_password }}"
     name: "{{ database_user }}"
