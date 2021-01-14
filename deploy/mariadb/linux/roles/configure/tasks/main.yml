@@ -31,5 +31,7 @@
     mode: 0775
   become: yes
 
-
-
+- name: turn of se linux
+  shell: setenforce 0
+  become: true
+  ignore_errors: true
